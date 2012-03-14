@@ -15,10 +15,13 @@ class AjaxHandler{
     
     private $responseContentType = /* "application/x-json"; # */ "text/javascript"; # for debugging
     private $timers = array();
+    private $callback;
+
+    protected $actionKey = 'action';
 
     function __construct($request){
         $this->timerStart("Request"); # Keep request time
-        if(!isset($request['action'])){
+        if(!isset($request[$this->actionKey])){
             $this->error('No action was provided. Please check your request');
         }
 
@@ -36,9 +39,16 @@ class AjaxHandler{
             $this->lazy = $this->request['lazy'];
         }
         
-        $this->action = $request['action'];
+        $this->action = $request[$this->actionKey];
         set_error_handler(array($this, "errorHandler"));
 
+    }
+
+    /**
+     * This will execute the ajax processes
+     * @return 
+     */
+    public function execute(){
         # run the action now
         $this->runAction();
         # If action does not end the process. End it with default
@@ -95,7 +105,7 @@ class AjaxHandler{
      * @param object $filename
      * @param object $line
      */
-    public function errorHandler($errno, $message, $filename, $line) {
+    private function errorHandler($errno, $message, $filename, $line) {
         if (error_reporting() == 0) {
             return;
         }
@@ -114,7 +124,7 @@ class AjaxHandler{
      * Runs the given method
      * @param object $action This optional you cal call a different action with the same parameters
      */
-    public function runAction($action = false){
+    private function runAction($action = false){
         # Support for manual actions
         if(!$action){
             $action = $this->action;
@@ -165,10 +175,6 @@ class AjaxHandler{
             $addHash["error"] = $message;
         }
         
-        if($this->responses){
-            $addHash['other_responses'] = $this->responses;
-        }
-        
         $addHash["success"] = false;
         $addHash["duration"] = $this->timerEnd("Request");
         
@@ -197,10 +203,6 @@ class AjaxHandler{
             $addHash = $message;
         }else{
             $addHash["message"] = $message;
-        }
-        
-        if($this->responses){
-            $addHash['other_responses'] = $this->responses;
         }
         
         $addHash["success"] = true;
