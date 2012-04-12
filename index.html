@@ -1,0 +1,148 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>AjaxHandler by serkanyersen</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>AjaxHandler</h1>
+<p>A PHP Class to help handling Ajax Requests</p>
+        <p class="view"><a href="https://github.com/serkanyersen/AjaxHandler">View the Project on GitHub <small>serkanyersen/AjaxHandler</small></a></p>
+        <ul>
+          <li><a href="https://github.com/serkanyersen/AjaxHandler/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/serkanyersen/AjaxHandler/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/serkanyersen/AjaxHandler">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h3>Don't write that <code>switch</code> again.</h3>
+
+<p>Are you tired of writing the same Ajax handler code over and over again on your each project? There are always the same steps and same problems, is it handling headers correctly? Will it work with jQuery? Status Codes? JSONP? </p>
+
+<p>Well, I've collected all the code pieces together and created the AjaxHanler. It's a very simple PHP Class which you can inherit and create your own Ajax handlers easily.</p>
+
+<h3>Features</h3>
+
+<p>Here is a list of features Ajax Handler provides</p>
+
+<ul>
+<li>  <strong>Unified Output</strong> Your every Ajax request will produce a standard JSON output, so your client code will be simpler and understandable. Outputs are only handled by ::error and ::success methods, You'll never have to use <code>json_encode</code> when outputting.</li>
+<li>  <strong>Error Handling</strong> AjaxHandler will automatically catch exceptions and PHP errors and handle them for you. You can customize error messages and changes status codes</li>
+<li>  <strong>JSONP Support</strong> Ajax handler will automatically handle requests with callback parameters, you can customize the callback name and type</li>
+<li>  <strong>Clean Code</strong> Object Oriented design will let you easily tear apart your code into separate files, This is especially good for Backbone like MVC projects</li>
+<li>  <strong>Stats</strong> Ajax handler will keep duration of your each request and return it to you, so you can easily measure your codes performance</li>
+<li>  <strong>Very Simple Code</strong> Ajax Handler's code is very simple and you can easily customize it according to your needs.</li>
+<li>  <strong>It's All Free</strong> Ajax Handler is an MIT licensed piece of code so you can use it own your own projects</li>
+</ul><p>Here is a very basic example of AjaxHandler in Use lets say this is person.php</p>
+
+<div class="highlight">
+<pre><span class="cp">&lt;?php</span>
+<span class="k">include</span> <span class="s2">"AjaxHandler.php"</span><span class="p">;</span>
+<span class="k">class</span> <span class="nc">Person</span> <span class="k">extends</span> <span class="nx">AjaxHandler</span><span class="p">{</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * Private function will not be accessed from outside</span>
+<span class="sd">     * @return Mongo Collection</span>
+<span class="sd">     */</span>
+    <span class="k">private</span> <span class="k">function</span> <span class="nf">getMongo</span><span class="p">(){</span>
+        <span class="nv">$m</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Mongo</span><span class="p">();</span>
+        <span class="nv">$db</span> <span class="o">=</span> <span class="nv">$m</span><span class="o">-&gt;</span><span class="na">selectDB</span><span class="p">(</span><span class="s1">'main'</span><span class="p">);</span>
+        <span class="nv">$cl</span> <span class="o">=</span> <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">selectCollection</span><span class="p">(</span><span class="s1">'people'</span><span class="p">);</span>
+        <span class="k">return</span> <span class="nv">$cl</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * All I write here is the code</span>
+<span class="sd">     * I didn't write anything to handle output</span>
+<span class="sd">     * If the code gives an exception, ajax </span>
+<span class="sd">     * handler will return error, If Everything is successfull</span>
+<span class="sd">     * Standart success message will be returned</span>
+<span class="sd">     * @return [type] [description]</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">createPerson</span><span class="p">(){</span>
+
+        <span class="nv">$db</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getMongo</span><span class="p">();</span>
+
+        <span class="nv">$result</span> <span class="o">=</span> <span class="nv">$cl</span><span class="o">-&gt;</span><span class="na">save</span><span class="p">(</span><span class="k">array</span><span class="p">(</span>
+            <span class="s2">"name"</span> <span class="o">=&gt;</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">'name'</span><span class="p">),</span>
+            <span class="s2">"age"</span>  <span class="o">=&gt;</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">'age'</span><span class="p">)</span>
+        <span class="p">));</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * Here is the code for handling your own messages</span>
+<span class="sd">     * @return [type] [description]</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">getPersonDetails</span><span class="p">(){</span>
+        <span class="nv">$db</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getMongo</span><span class="p">();</span>
+
+        <span class="nv">$cursor</span> <span class="o">=</span> <span class="nv">$db</span><span class="o">-&gt;</span><span class="na">fetch</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">'name'</span><span class="p">)));</span>
+
+        <span class="k">if</span><span class="p">(</span><span class="nv">$cursor</span><span class="o">-&gt;</span><span class="na">count</span><span class="p">()</span> <span class="o">===</span> <span class="mi">0</span><span class="p">){</span>
+            <span class="c1">// Will produce an error</span>
+            <span class="c1">// {"success": false, "error": "Person cannot be found"}</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">error</span><span class="p">(</span><span class="s1">'Person cannot be found'</span><span class="p">);</span>
+        <span class="p">}</span><span class="k">else</span><span class="p">{</span>
+            <span class="c1">// Will giveout a JSON success message</span>
+            <span class="c1">// {</span>
+            <span class="c1">//   "success": true, </span>
+            <span class="c1">//   "details":{"name":"john", "age":"29"}, </span>
+            <span class="c1">//   "message":"Operation successful"</span>
+            <span class="c1">// }</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">success</span><span class="p">(</span><span class="k">array</span><span class="p">(</span>
+                <span class="s2">"details"</span><span class="o">=&gt;</span><span class="nv">$cursor</span><span class="o">-&gt;</span><span class="na">first</span><span class="p">()</span>
+            <span class="p">));</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</pre>
+</div>
+
+
+<p>You can make requests with jQuery easily</p>
+
+<div class="highlight">
+<pre><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+    <span class="nx">url</span><span class="o">:</span><span class="s1">'person.php'</span><span class="p">,</span>
+    <span class="nx">data</span><span class="o">:</span><span class="p">{</span>
+      <span class="nx">action</span><span class="o">:</span> <span class="s1">'createPerson'</span><span class="p">,</span>
+      <span class="nx">name</span><span class="o">:</span> <span class="s1">'john'</span><span class="p">,</span>
+      <span class="nx">age</span><span class="o">:</span> <span class="mi">29</span>
+    <span class="p">},</span>
+    <span class="nx">dataType</span><span class="o">:</span><span class="s1">'json'</span><span class="p">,</span>
+    <span class="nx">complete</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">){</span>
+        <span class="k">if</span><span class="p">(</span><span class="nx">res</span><span class="p">.</span><span class="nx">success</span><span class="p">){</span>
+            <span class="nx">alert</span><span class="p">(</span><span class="s1">'User Saved'</span><span class="p">);</span>
+        <span class="p">}</span><span class="k">else</span><span class="p">{</span>
+            <span class="nx">alert</span><span class="p">(</span><span class="s1">'Error: '</span><span class="o">+</span> <span class="nx">res</span><span class="p">.</span><span class="nx">error</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">});</span>
+</pre>
+</div>
+
+
+<p>I'll write a more detailed documentation soon.</p>
+      </section>
+    </div>
+    <footer>
+      <p>Project maintained by <a href="https://github.com/serkanyersen">serkanyersen</a></p>
+      <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
+    </footer>
+    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+    
+  </body>
+</html>
