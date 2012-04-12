@@ -105,7 +105,7 @@ class AjaxHandler{
      * @param object $filename
      * @param object $line
      */
-    private function errorHandler($errno, $message, $filename, $line) {
+    public function errorHandler($errno, $message, $filename, $line) {
         if (error_reporting() == 0) {
             return;
         }
@@ -167,7 +167,7 @@ class AjaxHandler{
      * @param object|string $message An error message, you can directly pass all parameters here
      * @param object $addHash[optional] contains the all error parameters will be sent as a response
      */
-    protected function error($message, $addHash = array(), $status = 400){
+    public function error($message, $addHash = array(), $status = 400){
         
         if(is_array($message)){
             $addHash = $message;
@@ -198,7 +198,7 @@ class AjaxHandler{
      * @param object|string $message Success message you can also pass the all parameters as an array here
      * @param object $addHash [optional] all other parameters to be sent to user as a response
      */
-    protected function success($message, $addHash = array(), $status = 200){
+    public function success($message, $addHash = array(), $status = 200){
         if(is_array($message)){
             $addHash = $message;
         }else{
