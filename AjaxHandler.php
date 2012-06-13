@@ -49,6 +49,7 @@ class AjaxHandler{
     private $timers = array();
     private $callback;
     private $body;
+    private $path;
     private $requestType;
 
     protected $actionKey = 'action';
@@ -57,8 +58,9 @@ class AjaxHandler{
      * Initializer function
      * @constructor
      * @param array $request $_GET, $_POST, $_REQUEST or and associative array as a request parameters if empty $_REQUEST will be used
+     * @param array array of URL folders. 
      */
-    function __construct($request = false){
+    function __construct($request = false, $path = array()){
 
         # User did not providerequest parameters use default instead
         if($request === false){
@@ -79,6 +81,8 @@ class AjaxHandler{
         # Set request
         $this->request = $request;
 
+        # Set Path parameter
+        $this->path = $path;
 
         # Request Type GET | PUT | POST | DELETE
         $this->requestType  = $_SERVER['REQUEST_METHOD'];
@@ -99,6 +103,15 @@ class AjaxHandler{
 
         # Define Error Handler
         set_error_handler(array($this, "errorHandler"));
+    }
+
+    /**
+     * Get url folder part by given index
+     * @param  int $index index of path array
+     * @return string        Part of the URL requested
+     */
+    public function getPath($index){
+        return $this->path[$index];
     }
 
     /**
