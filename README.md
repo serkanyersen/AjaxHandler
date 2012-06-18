@@ -1,7 +1,7 @@
 ### Don't write that `switch` again.
 Are you tired of writing the same Ajax handler code over and over again on your each project? There are always the same steps and same problems, is it handling headers correctly? Will it work with jQuery? Status Codes? JSONP? 
 
-Well, I've collected all the code pieces together and created the AjaxHanler. It's a very simple PHP Class which you can inherit and create your own Ajax handlers easily.
+Well, I've collected all the code pieces together and created the AjaxHandler. It's a very simple PHP Class which you can inherit and create your own Ajax handlers easily.
 
 ### Features
 Here is a list of features Ajax Handler provides
